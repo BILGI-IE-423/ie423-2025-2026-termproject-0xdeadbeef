@@ -17,7 +17,7 @@ Sarcasm is one of the most difficult phenomena to understand in natural language
 ## Repository Structure
 ```
 ├── README.md                  → you are here
-├── requirements.txt           → required Python packages
+├── requirements.txt           → required python packages
 ├── data/
 │   ├── raw/                   → raw dataset file (see data/README.md)
 │   ├── processed/             → cleaned and preprocessed data
@@ -25,7 +25,7 @@ Sarcasm is one of the most difficult phenomena to understand in natural language
 ├── scripts/
 │   ├── 01_load_data.py        → loads dataset, checks paths, prints basic info
 │   ├── 02_preprocess_data.py  → cleans text, engineers features, saves processed data
-│   └── 03_basic_eda.py        → generates 5 visualizations and summary tables
+│   └── 03_basic_eda.py        → generates 6 visualizations and summary tables
 ├── outputs/
 │   ├── figures/               → generated plots
 │   └── tables/                → generated summary tables
