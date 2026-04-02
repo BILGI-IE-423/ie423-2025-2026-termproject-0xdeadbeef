@@ -12,7 +12,7 @@
 ### How to obtain the dataset
 1. Go to the Kaggle link above
 2. Download the dataset (zip file)
-3. Place `Sarcasm_Headlines.zip` inside `data/raw/`
+3. Place `Sarcasm_Headlines_Dataset.json` inside `data/raw/`
 4. The scripts will automatically extract the JSON files when run
 
 ## Processed Data
