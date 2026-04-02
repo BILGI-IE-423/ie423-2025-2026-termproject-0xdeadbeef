@@ -1,5 +1,3 @@
-# Data Directory
-
 ## Dataset Access Instructions
 
 ### News Headlines Dataset for Sarcasm Detection
