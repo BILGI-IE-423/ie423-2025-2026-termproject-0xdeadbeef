@@ -1,4 +1,4 @@
-# IE 423 Term Project Proposal — Decoding Sarcasm in News Headlines: A Feature Engineering and Classification Approach
+# IE 423 Term Project Proposal — Sarcasm Detection in News Headlines
 
 ## Team Members
 - Ada Güner Nohut
