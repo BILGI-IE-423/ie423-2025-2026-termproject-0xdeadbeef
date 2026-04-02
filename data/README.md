@@ -4,7 +4,7 @@
 
 ### News Headlines Dataset for Sarcasm Detection
 - **Source:** https://www.kaggle.com/datasets/rmisra/news-headlines-dataset-for-sarcasm-detection
-- **File:** `Sarcasm_Headlines_Dataset.json.zip` (contains `Sarcasm_Headlines_Dataset.json`)
+- **File:** `Sarcasm_Headlines_Dataset.json`
 - **Format:** JSON Lines (one JSON object per line), inside a zip archive
 - **Size:** 28,619 headlines, 2 columns (`is_sarcastic`, `headline`)
 - **Placement:** Download and place the zip file inside `data/raw/`
