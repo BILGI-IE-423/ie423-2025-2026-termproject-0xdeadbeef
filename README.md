@@ -1,9 +1,9 @@
 # IE 423 Term Project Proposal — Sarcasm Detection in News Headlines
 
 ## Team Members
-- Ada Güner Nohut
-- Veli Erenay Açıl
-- Onur Sarıdoğan
+- Ada Güner Nohut 122203012
+- Onur Sarıdoğan 121203077
+- Veli Erenay Açıl 122203072
 
 ## Dataset
 **News Headlines Dataset for Sarcasm Detection**
@@ -12,21 +12,21 @@
 
 ## Repository Structure
 ```
-├── README.md
-├── requirements.txt
+├── README.md                  → you are here
+├── requirements.txt           → required Python packages
 ├── data/
-│   ├── raw/                 → raw dataset file (see data/README.md)
-│   ├── processed/           → cleaned and preprocessed data
-│   └── README.md            → dataset access and placement instructions
+│   ├── raw/                   → raw dataset file (see data/README.md)
+│   ├── processed/             → cleaned and preprocessed data
+│   └── README.md              → dataset access and placement instructions
 ├── scripts/
-│   ├── 01_load_data.py      → loads dataset, checks paths, prints basic info
-│   ├── 02_preprocess_data.py→ cleans text, engineers features, saves processed data
-│   └── 03_basic_eda.py      → generates 5 visualizations and summary tables
+│   ├── 01_load_data.py        → loads dataset, checks paths, prints basic info
+│   ├── 02_preprocess_data.py  → cleans text, engineers features, saves processed data
+│   └── 03_basic_eda.py        → generates 5 visualizations and summary tables
 ├── outputs/
-│   ├── figures/             → generated plots
-│   └── tables/              → generated summary tables
+│   ├── figures/               → generated plots
+│   └── tables/                → generated summary tables
 └── docs/
-    └── ResearchProposalPreprocessing.md → main proposal and presentation document
+    └── ResearchProposalPreprocessing.md   → main proposal and presentation document
 ```
 
 ## Installation
