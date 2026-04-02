@@ -6,7 +6,7 @@
 - **Source:** https://www.kaggle.com/datasets/rmisra/news-headlines-dataset-for-sarcasm-detection
 - **File:** `Sarcasm_Headlines_Dataset.json`
 - **Format:** JSON Lines (one JSON object per line), inside a zip archive
-- **Size:** 28619 article link, 28619 headlines, 3 columns ('article_link', `headline`, `is_sarcastic`)
+- **Size:** 28619 article link, 28619 headlines, 3 columns (`article_link`, `headline`, `is_sarcastic`)
 - **Placement:** Download and place the zip file inside `data/raw/`
 
 ### How to obtain the dataset
