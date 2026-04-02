@@ -18,4 +18,4 @@
 ## Processed Data
 
 After running `scripts/02_preprocess_data.py`, the cleaned dataset is saved to:
-- `data/processed/cleaned_sarcasm_data.csv` — 28,503 rows, 6 columns (after removing 116 duplicates)
+- `data/processed/cleaned_sarcasm_data.csv`
