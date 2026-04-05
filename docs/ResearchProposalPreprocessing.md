@@ -230,7 +230,7 @@ Normal headlines are dominated by topical political and geographic bigrams, in c
 ### 1. Clone the repository
 
 ```bash
-git clone [your-repository-link]
+git clone [https://github.com/BILGI-IE-423/ie423-2025-2026-termproject-0xdeadbeef]
 cd [repository-name]
 ```
 
