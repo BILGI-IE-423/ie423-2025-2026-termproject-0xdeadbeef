@@ -4,9 +4,9 @@
 
 ## Team Information
 
-- Ada Guner Nohut
-- Veli Erenay Acil
-- Onur Saridogan
+- Ada Güner Nohut 122203012
+- Onur Sarıdoğan 121203077
+- Veli Erenay Açıl 122203072
 
 ---
 
