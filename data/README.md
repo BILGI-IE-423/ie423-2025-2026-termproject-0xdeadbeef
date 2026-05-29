@@ -7,11 +7,11 @@ This folder contains the raw and processed datasets used in the project.
 ## Raw Datasets
 
 Place the following two files in `data/raw/` before running any scripts.
-They are not committed to this repository due to size constraints.
+
 
 ### 1. News Headlines Dataset for Sarcasm Detection
 
-- **Source:** [Kaggle — Rishabh Misra](https://www.kaggle.com/datasets/rmisra/news-headlines-dataset-for-sarcasm-detection)
+- **Source:** [Kaggle](https://www.kaggle.com/datasets/rmisra/news-headlines-dataset-for-sarcasm-detection)
 - **File name:** `Sarcasm_Headlines_Dataset.json`
 - **Domain:** News headlines (The Onion — sarcastic, HuffPost — normal)
 - **Size:** 26,709 rows
@@ -19,7 +19,7 @@ They are not committed to this repository due to size constraints.
 
 ### 2. Forum Comments Dataset (GEN-sarc-notsarc)
 
-- **Source:** [Kaggle — coldn00ldes](https://www.kaggle.com/datasets/coldn00ldes/sarcasm-corpus-v2oraby-et-al) — Sarcasm Corpus V2 (Oraby et al., 2016)
+- **Source:** [Kaggle](https://www.kaggle.com/datasets/coldn00ldes/sarcasm-corpus-v2oraby-et-al) — Sarcasm Corpus V2 (Oraby et al., 2016)
 - **File name:** `GEN-sarc-notsarc.csv`
 - **Domain:** Usenet forum comments
 - **Size:** 6,520 rows (50% sarcastic, 50% normal)
