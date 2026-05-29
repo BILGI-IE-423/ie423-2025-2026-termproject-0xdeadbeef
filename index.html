@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sarcasm Detection — IE 423 Machine Learning Applications</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink:       #1a1a2e;
+      --ink-soft:  #4a4a6a;
+      --ink-muted: #8888aa;
+      --paper:     #fafaf7;
+      --accent:    #e6550d;
+      --accent2:   #3182bd;
+      --green:     #2ca02c;
+      --surface:   #f0f0eb;
+      --border:    #e0e0d8;
+      --serif:     'DM Serif Display', Georgia, serif;
+      --sans:      'DM Sans', system-ui, sans-serif;
+      --mono:      'DM Mono', monospace;
+      --r:         8px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); background: var(--paper); color: var(--ink); font-size: 16px; line-height: 1.7; }
+    img { max-width: 100%; height: auto; display: block; border-radius: var(--r); }
+    a { color: var(--accent2); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 40px; }
+    .wide      { max-width: 1280px; margin: 0 auto; padding: 0 40px; }
+
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(250,250,247,0.92); backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border); padding: 14px 0;
+    }
+    nav .inner {
+      max-width: 1280px; margin: 0 auto; padding: 0 40px;
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    }
+    nav a { font-size: 12px; font-weight: 500; color: var(--ink-soft); padding: 4px 10px; border-radius: 20px; transition: background .15s, color .15s; }
+    nav a:hover { background: var(--surface); color: var(--ink); text-decoration: none; }
+    nav .logo { font-family: var(--serif); font-size: 14px; color: var(--ink); margin-right: 12px; cursor: pointer; transition: color .15s; }
+    nav .logo:hover { color: var(--accent); }
+
+    .hero { padding: 80px 0 60px; border-bottom: 1px solid var(--border); }
+    .hero .tag { display: inline-block; font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--accent); background: rgba(230,85,13,.08); padding: 4px 12px; border-radius: 20px; letter-spacing: .04em; margin-bottom: 20px; }
+    .hero h1 { font-family: var(--serif); font-size: clamp(2rem, 5vw, 3rem); line-height: 1.15; color: var(--ink); margin-bottom: 20px; }
+    .hero h1 em { font-style: italic; color: var(--accent); }
+    .hero .subtitle { font-size: 17px; color: var(--ink-soft); max-width: 1000px; margin-bottom: 32px; line-height: 1.7; }
+    .team-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip { font-size: 13px; font-weight: 500; color: var(--ink-soft); background: var(--surface); border: 1px solid var(--border); padding: 6px 14px; border-radius: 20px; }
+
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px,1fr)); gap: 16px; margin: 40px 0; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 20px 22px; }
+    .stat-card .num { font-family: var(--serif); font-size: 2rem; color: var(--accent); line-height: 1; }
+    .stat-card .label { font-size: 13px; color: var(--ink-muted); margin-top: 4px; }
+
+    section { padding: 64px 0; border-bottom: 1px solid var(--border); }
+    section:last-of-type { border-bottom: none; }
+    .section-label { font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: .1em; color: var(--ink-muted); text-transform: uppercase; margin-bottom: 10px; }
+    h2 { font-family: var(--serif); font-size: clamp(1.6rem, 3vw, 2.2rem); line-height: 1.2; color: var(--ink); margin-bottom: 20px; }
+    h3 { font-family: var(--serif); font-size: 1.2rem; color: var(--ink); margin: 28px 0 10px; }
+    h4 { font-size: 15px; font-weight: 600; color: var(--ink); margin: 20px 0 8px; }
+    p { color: var(--ink-soft); margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+    ul, ol { color: var(--ink-soft); padding-left: 20px; margin-bottom: 16px; }
+    li { margin-bottom: 6px; }
+
+    .rq-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 24px; }
+    .rq-num { flex-shrink: 0; width: 44px; height: 44px; background: var(--ink); color: var(--paper); font-family: var(--serif); font-size: 1.3rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .rq-question { font-family: var(--serif); font-size: 1.1rem; line-height: 1.4; color: var(--ink); flex: 1; }
+
+    .fig-block { margin: 24px 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 18px; }
+    .fig-block img { border-radius: 4px; }
+    .fig-caption { font-size: 13px; color: var(--ink-muted); margin-top: 10px; font-family: var(--mono); }
+    .fig-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
+    @media (max-width: 640px) { .fig-row { grid-template-columns: 1fr; } }
+
+    .finding { border-left: 3px solid var(--accent); background: rgba(230,85,13,.04); padding: 14px 18px; border-radius: 0 var(--r) var(--r) 0; margin: 16px 0; }
+    .finding.blue { border-color: var(--accent2); background: rgba(49,130,189,.04); }
+    .finding.green { border-color: var(--green); background: rgba(44,160,44,.04); }
+    .finding.grey { border-color: #999; background: rgba(0,0,0,.03); }
+    .finding strong { color: var(--ink); }
+
+    .result-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 16px 0; }
+    .result-table th { background: var(--ink); color: var(--paper); padding: 10px 14px; text-align: left; font-weight: 500; font-family: var(--mono); font-size: 12px; letter-spacing: .04em; }
+    .result-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); color: var(--ink-soft); }
+    .result-table tr:last-child td { border-bottom: none; }
+    .result-table tr:hover td { background: var(--surface); }
+    .result-table .best td { color: var(--ink); font-weight: 600; }
+    .result-table .num { font-family: var(--mono); color: var(--ink); }
+
+    pre { background: var(--ink); color: #e8e8f0; padding: 20px 24px; border-radius: var(--r); font-family: var(--mono); font-size: 13px; line-height: 1.6; overflow-x: auto; margin: 16px 0; }
+    code { font-family: var(--mono); font-size: .9em; background: var(--surface); padding: 2px 6px; border-radius: 4px; color: var(--accent); }
+
+    .steps { list-style: none; counter-reset: step; }
+    .steps li { counter-increment: step; padding: 14px 0 14px 52px; border-bottom: 1px solid var(--border); position: relative; color: var(--ink-soft); }
+    .steps li:last-child { border-bottom: none; }
+    .steps li::before { content: counter(step); position: absolute; left: 0; top: 14px; width: 32px; height: 32px; background: var(--surface); border: 1px solid var(--border); border-radius: 50%; font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--ink); display: flex; align-items: center; justify-content: center; }
+    .steps li strong { color: var(--ink); }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0; }
+    @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+    .method-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 18px 20px; }
+    .method-card h4 { margin-top: 0; color: var(--accent2); }
+
+    footer { background: var(--ink); color: rgba(255,255,255,.5); padding: 40px 0; font-size: 14px; }
+    footer .inner { max-width: 1280px; margin: 0 auto; padding: 0 40px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    footer a { color: rgba(255,255,255,.7); }
+
+    /* Clickable figures + lightbox */
+    .fig-block img { cursor: zoom-in; transition: opacity .15s; }
+    .fig-block img:hover { opacity: 0.88; }
+    .lightbox {
+      display: none; position: fixed; inset: 0; z-index: 1000;
+      background: rgba(20,20,30,0.92); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center; padding: 40px;
+      cursor: zoom-out;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 95%; max-height: 92%; border-radius: 6px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5); cursor: default;
+    }
+    .lightbox .close-hint {
+      position: absolute; top: 24px; right: 32px;
+      color: rgba(255,255,255,0.7); font-family: var(--mono);
+      font-size: 13px; cursor: pointer;
+    }
+    .lightbox .close-hint:hover { color: #fff; }
+
+    /* Project at a Glance box */
+    .glance {
+      background: var(--ink); color: var(--paper);
+      border-radius: var(--r); padding: 32px 36px; margin: 40px 0;
+    }
+    .glance h3 {
+      font-family: var(--serif); color: var(--paper);
+      font-size: 1.3rem; margin: 0 0 20px;
+    }
+    .glance-flow {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+      align-items: stretch;
+    }
+    @media (max-width: 760px) { .glance-flow { grid-template-columns: 1fr; } }
+    .glance-step {
+      position: relative; padding: 0 18px;
+    }
+    .glance-step:not(:last-child)::after {
+      content: '→'; position: absolute; right: -2px; top: 4px;
+      color: var(--accent); font-size: 1.2rem; font-weight: bold;
+    }
+    @media (max-width: 760px) {
+      .glance-step:not(:last-child)::after { content: '↓'; right: auto; left: 18px; top: auto; bottom: -16px; }
+      .glance-step { padding: 0 0 24px; }
+    }
+    .glance-step .gnum {
+      font-family: var(--mono); font-size: 11px; letter-spacing: .08em;
+      color: var(--accent); text-transform: uppercase; margin-bottom: 6px;
+    }
+    .glance-step .gtitle {
+      font-weight: 600; font-size: 15px; color: var(--paper); margin-bottom: 6px;
+    }
+    .glance-step .gtext {
+      font-size: 13px; color: rgba(255,255,255,.65); line-height: 1.5;
+    }
+    .glance-step .gmetric {
+      font-family: var(--mono); font-size: 13px; color: var(--accent2);
+      margin-top: 6px; font-weight: 500;
+    }
+
+    /* Step bridge — connects each step to the previous */
+    .bridge {
+      display: flex; align-items: flex-start; gap: 12px;
+      background: var(--surface); border-left: 3px solid var(--accent);
+      border-radius: 0 var(--r) var(--r) 0; padding: 14px 18px; margin-bottom: 24px;
+    }
+    .bridge .arrow { color: var(--accent); font-size: 1.3rem; line-height: 1; flex-shrink: 0; }
+    .bridge p { margin: 0; font-size: 14px; color: var(--ink-soft); }
+    .bridge strong { color: var(--ink); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="inner">
+    <span class="logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">Sarcasm Detection</span>
+    <a href="#intro">Introduction</a>
+    <a href="#dataset">Dataset</a>
+    <a href="#preprocessing">Preprocessing</a>
+    <a href="#methodology">Methodology</a>
+    <a href="#step1">Step 1: Baseline</a>
+    <a href="#step2">Step 2: Leakage</a>
+    <a href="#step3">Step 3: Combined</a>
+    <a href="#step4">Step 4: Balance</a>
+    <a href="#discussion">Discussion</a>
+    <a href="#reproduce">Reproduce</a>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
+<div class="hero">
+  <div class="container">
+    <div class="tag">IE 423 — Machine Learning Applications in Industrial Engineering</div>
+    <h1>Can Machines Detect <em>Sarcasm</em> Across Different Domains?</h1>
+    <p class="subtitle">
+      Sarcasm is one of the hardest linguistic phenomena for machines to detect —
+      it requires understanding intent, tone, and context, not just the words themselves.
+      In this project we investigate whether classical machine learning methods,
+      when combined with carefully engineered features, can reliably identify sarcasm
+      across two very different domains: formal news headlines and informal online forum comments.
+      Along the way we uncover a critical data quality problem — source leakage — and show how
+      training on a single-source dataset can fool a model into learning the wrong thing.
+    </p>
+    <div class="team-chips">
+      <span class="chip">Ada Güner Nohut — 122203012</span>
+      <span class="chip">Onur Sarıdoğan — 121203077</span>
+      <span class="chip">Veli Erenay Açıl — 122203072</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Key numbers ── -->
+<div class="container">
+  <div class="summary-grid">
+    <div class="stat-card"><div class="num">33,010</div><div class="label">Total texts analysed</div></div>
+    <div class="stat-card"><div class="num">0.787</div><div class="label">Best model F1 score (test set)</div></div>
+    <div class="stat-card"><div class="num">0.883</div><div class="label">AUC score (test set)</div></div>
+    <div class="stat-card"><div class="num">3</div><div class="label">Research questions answered</div></div>
+  </div>
+
+  <div class="glance">
+    <h3>The Story in Four Steps</h3>
+    <div class="glance-flow">
+      <div class="glance-step">
+        <div class="gnum">Step 1 — Baseline</div>
+        <div class="gtitle">Strong results on news</div>
+        <div class="gtext">Trained models on news headlines across 5 feature sets. Best score looked excellent.</div>
+        <div class="gmetric">F1 = 0.827</div>
+      </div>
+      <div class="glance-step">
+        <div class="gnum">Step 2 — Leakage</div>
+        <div class="gtitle">But it learned the wrong thing</div>
+        <div class="gtext">The model memorised The Onion's writing style, not sarcasm. Tested on forum comments, it collapsed.</div>
+        <div class="gmetric">F1 = 0.120 on forum</div>
+      </div>
+      <div class="glance-step">
+        <div class="gnum">Step 3 — Combined</div>
+        <div class="gtitle">Fixed by training on both domains</div>
+        <div class="gtext">Combined news + forum data forced the model to find signals that generalise. Honest, leakage-free score.</div>
+        <div class="gmetric">F1 = 0.787 (test)</div>
+      </div>
+      <div class="glance-step">
+        <div class="gnum">Step 4 — Balance</div>
+        <div class="gtitle">Closed the domain gap</div>
+        <div class="gtext">Balanced training data made the model perform equally well on both domains — at a small cost to overall accuracy.</div>
+        <div class="gmetric">Gap: 0.168 → 0.002</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Introduction ── -->
+<section id="intro">
+  <div class="container">
+    <div class="section-label">01 — Introduction</div>
+    <h2>Why Is Sarcasm Hard for Machines?</h2>
+    <p>
+      When a person says <em>"Oh great, another Monday"</em>, the words themselves are
+      positive — but the meaning is negative. Humans understand this instantly through tone,
+      context, and cultural knowledge. Machines, however, only see the text.
+      This makes sarcasm detection a fundamentally challenging natural language processing problem.
+    </p>
+    <p>
+      Standard sentiment analysis tools like VADER and TextBlob are designed to score the
+      emotional content of words. A sentence packed with positive vocabulary ("great", "amazing",
+      "wonderful") will receive a high positive score — even if the author intended the opposite.
+      This project investigates just how often this happens, and whether machine learning models
+      trained on word patterns and stylistic signals can do better.
+    </p>
+    <p>
+      We work with two datasets from different domains: formal news headlines (The Onion vs
+      HuffPost) and informal Usenet forum comments. This cross-domain design allows us to test
+      whether models learn genuine sarcasm signals or simply memorise the writing style of a
+      particular source — a distinction that turns out to be critical.
+    </p>
+
+    <h3>What We Did — Project Overview</h3>
+    <ol class="steps">
+      <li>
+        <strong>Loaded and explored the raw data</strong><br>
+        Checked for duplicates, missing values, class balance, and basic statistics
+        on both the news headlines and forum comments datasets.
+      </li>
+      <li>
+        <strong>Preprocessed both datasets</strong><br>
+        Extracted six structural features from the raw text (character count, word count,
+        average word length, quote count, exclamation count, question mark count), then
+        cleaned the text (lowercasing, removing punctuation and digits, filtering short texts).
+      </li>
+      <li>
+        <strong>Exploratory data analysis</strong><br>
+        Visualised class distributions, feature distributions by class,
+        correlations, and top word pair patterns in sarcastic vs normal texts.
+      </li>
+      <li>
+        <strong>Sentiment analysis (RQ2)</strong><br>
+        Applied VADER and TextBlob to both datasets to measure how often
+        standard sentiment tools misclassify sarcastic content as positive.
+      </li>
+      <li>
+        <strong>News-only baseline models (RQ1, RQ3)</strong><br>
+        Trained Logistic Regression, Linear SVM, and Random Forest on the
+        news headlines dataset across five different feature sets.
+        Used 5-Fold Cross-Validation to evaluate each combination.
+      </li>
+      <li>
+        <strong>Leakage detection and cross-domain test</strong><br>
+        Discovered that the best news model had learned the writing style of
+        The Onion rather than genuine sarcasm signals. Confirmed this by testing
+        the model on forum comments — performance collapsed.
+      </li>
+      <li>
+        <strong>Domain-independent combined model</strong><br>
+        Combined both datasets, retrained all models using Nested Cross-Validation,
+        and evaluated on a held-out test set to produce honest, leakage-free results.
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ── Dataset ── -->
+<section id="dataset">
+  <div class="container">
+    <div class="section-label">02 — Dataset</div>
+    <h2>Two Datasets, Two Very Different Domains</h2>
+    <p>
+      We use two publicly available datasets. Using two domains is deliberate — it allows
+      us to test whether models learn genuine sarcasm patterns or domain-specific writing styles.
+    </p>
+
+    <h3>News Headlines Dataset</h3>
+    <p>
+      The <a href="https://www.kaggle.com/datasets/rmisra/news-headlines-dataset-for-sarcasm-detection" target="_blank">News Headlines Dataset for Sarcasm Detection</a>
+      contains headlines from two sources: <em>The Onion</em> (a satirical publication — all sarcastic)
+      and <em>HuffPost</em> (a factual news site — all non-sarcastic). Headlines are short,
+      averaging around 10 words, with a formal journalistic style.
+    </p>
+
+    <h3>Forum Comments Dataset (GEN)</h3>
+    <p>
+      The <a href="https://www.kaggle.com/datasets/coldn00ldes/sarcasm-corpus-v2oraby-et-al" target="_blank">Sarcasm Corpus V2</a>
+      (Oraby et al., 2016) contains comments from Usenet discussion forums. These are much longer
+      (~35 words on average), informal, and written in a conversational style — a very different
+      domain from news headlines. We use the GEN-sarc-notsarc subset, which is balanced 50/50.
+    </p>
+
+    <table class="result-table">
+      <thead>
+        <tr><th>Dataset</th><th>Domain</th><th>Texts</th><th>Balance</th><th>Avg. Length</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>News Headlines</td><td>News (The Onion / HuffPost)</td><td class="num">26,490</td><td>56% Normal / 44% Sarcastic</td><td>~10 words</td></tr>
+        <tr><td>Forum Comments (GEN)</td><td>Usenet discussion forums</td><td class="num">6,520</td><td>50% Normal / 50% Sarcastic</td><td>~35 words</td></tr>
+        <tr class="best"><td>Combined</td><td>Both domains</td><td class="num">33,010</td><td>55% Normal / 45% Sarcastic</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <p>
+      Place <code>Sarcasm_Headlines_Dataset.json</code> and <code>GEN-sarc-notsarc.csv</code>
+      in <code>data/raw/</code> before running the scripts.
+    </p>
+  </div>
+</section>
+
+<!-- ── Preprocessing ── -->
+<section id="preprocessing">
+  <div class="container">
+    <div class="section-label">03 — Preprocessing</div>
+    <h2>Preparing the Data for Machine Learning</h2>
+    <p>
+      Both datasets go through the same preprocessing pipeline, ensuring fair comparison.
+      The most important decision here is the order of operations: structural features must
+      be extracted <strong>before</strong> text cleaning, because cleaning removes punctuation
+      — and punctuation is itself a feature.
+    </p>
+
+    <ol class="steps">
+      <li>
+        <strong>Duplicate removal and column cleanup</strong><br>
+        Exact duplicate texts are dropped. Irrelevant columns (article links, IDs) are removed.
+        Labels are converted to 0 (normal) and 1 (sarcastic).
+      </li>
+      <li>
+        <strong>Structural feature engineering (from raw text)</strong><br>
+        Six numerical features are extracted before any cleaning:
+        character count, word count, average word length, quote count,
+        exclamation mark count, and question mark count.
+        These capture <em>how</em> something is written, not <em>what</em> it says.
+      </li>
+      <li>
+        <strong>Text cleaning</strong><br>
+        Contraction expansion (e.g. "don't" → "do not") → lowercase conversion →
+        digit removal → punctuation removal → whitespace normalisation.
+      </li>
+      <li>
+        <strong>Integrity filtering</strong><br>
+        Texts shorter than 3 words after cleaning are removed. This removed
+        219 rows from the news dataset and 0 from the forum dataset.
+      </li>
+      <li>
+        <strong>Dataset combination</strong><br>
+        Both cleaned datasets are merged into a single combined dataset.
+        A <code>source</code> column is added to track which domain each text came from.
+        The combined dataset is shuffled with a fixed random seed (42) for reproducibility.
+      </li>
+    </ol>
+
+    <p>
+      The figures below illustrate the news headlines dataset — our primary corpus,
+      on which the baseline models are built (Step 1). The forum comments dataset
+      serves as the second domain for the leakage test (Step 2) and combined training (Step 3).
+    </p>
+
+    <div class="fig-row">
+      <div class="fig-block">
+        <img src="./visuals/figures/target_distribution_bar.png" alt="Class distribution" />
+        <p class="fig-caption">Fig 1 — Class balance in the news headlines dataset</p>
+      </div>
+      <div class="fig-block">
+        <img src="./visuals/figures/correlation_heatmap.png" alt="Feature correlations" />
+        <p class="fig-caption">Fig 2 — Correlation between structural features and sarcasm label (news headlines dataset)</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Methodology ── -->
+<section id="methodology">
+  <div class="container">
+    <div class="section-label">04 — Methodology</div>
+    <h2>How We Approached the Problem</h2>
+    <p>
+      We frame sarcasm detection as a binary classification task: given a text,
+      predict whether it is sarcastic (1) or normal (0). We deliberately chose
+      classical machine learning methods — not deep learning — to understand
+      which features and model types carry the most signal, and to keep results
+      interpretable and reproducible.
+    </p>
+
+    <h3>Feature Sets</h3>
+    <p>We experiment with five different ways of representing each text as numbers:</p>
+    <div class="two-col">
+      <div class="method-card">
+        <h4>Stylistic Features</h4>
+        <p>The 6 structural features extracted during preprocessing: character count, word count,
+        average word length, quote count, exclamation count, question mark count.
+        These capture writing style — <em>how</em> something is written.</p>
+      </div>
+      <div class="method-card">
+        <h4>Word Frequency (Single Words)</h4>
+        <p>Each unique word in the vocabulary becomes a column.
+        The value is the word's frequency in that text, adjusted for how rare
+        the word is across all texts (this is called TF-IDF weighting).
+        Captures <em>what</em> is said.</p>
+      </div>
+      <div class="method-card">
+        <h4>Word Frequency + Stylistic Features</h4>
+        <p>Combines single-word frequency with the 6 stylistic features.
+        This is our richest feature set and the best performer overall.</p>
+      </div>
+      <div class="method-card">
+        <h4>Word Pairs Only</h4>
+        <p>Instead of single words, we count pairs of consecutive words
+        (e.g. "area man", "study finds"). Word pairs capture some local context
+        that single words miss.</p>
+      </div>
+      <div class="method-card">
+        <h4>Words &amp; Pairs</h4>
+        <p>Combines single words and word pairs in the same feature matrix.
+        Tests whether adding word pairs on top of single words provides
+        meaningful additional signal.</p>
+      </div>
+    </div>
+
+    <h3>Machine Learning Models</h3>
+    <p>We train three different models on each feature set, chosen to represent
+    different approaches to classification:</p>
+    <div class="two-col">
+      <div class="method-card">
+        <h4>Logistic Regression (LR)</h4>
+        <p>A linear model that assigns a weight to each feature and predicts
+        the probability of sarcasm. Fast, interpretable (we can read which words
+        matter most), and well-suited to high-dimensional word frequency data.
+        We use this for leakage analysis because its weights are directly readable.</p>
+      </div>
+      <div class="method-card">
+        <h4>Linear SVM</h4>
+        <p>Finds the widest possible boundary between sarcastic and normal texts
+        in feature space. Linear SVMs are particularly effective for high-dimensional
+        sparse data like word frequencies, often matching or slightly improving on
+        Logistic Regression.</p>
+      </div>
+      <div class="method-card">
+        <h4>Random Forest (RF)</h4>
+        <p>An ensemble of decision trees, each trained on a random subset of
+        features. Unlike the linear models above, Random Forest can capture
+        non-linear relationships. We include it especially to test stylistic features,
+        where its tree-based structure handles numerical data naturally.</p>
+      </div>
+    </div>
+
+    <h3>Evaluation Strategy</h3>
+    <div class="finding blue">
+      <strong>Why not just split data into train and test?</strong><br>
+      A single split can be unlucky — the test set might be easier or harder than average.
+      We use Cross-Validation instead: the training data is split into 5 equal parts,
+      and the model is trained and tested 5 times, each time using a different part as
+      the test fold. The average F1 score across all 5 folds is much more reliable.
+    </div>
+    <div class="finding blue">
+      <strong>What is Nested Cross-Validation (used in the combined model)?</strong><br>
+      When we also need to tune model parameters (e.g. how strong the regularisation should be),
+      a simple cross-validation loop would leak information — we'd be using the test fold
+      to choose parameters. Nested CV solves this: an inner loop finds the best parameters
+      using only the training portion, and an outer loop evaluates the result on held-out data.
+      This gives an unbiased performance estimate.
+    </div>
+    <div class="finding blue">
+      <strong>Why do we split 80/20 if we already use Cross-Validation?</strong><br>
+      Cross-Validation runs entirely within the training set — it tells us which model
+      and parameters work best <em>on data the model has already been exposed to</em>.
+      The moment we use cross-validation results to choose a model, that choice is
+      influenced by the training data. The held-out 20% test set answers a different
+      question: <em>"How does the chosen model perform on data it has never seen at all?"</em>
+      This is the only truly unbiased performance estimate. The two steps work together:
+      Nested CV selects the best model; the test set proves it.
+    </div>
+    <table class="result-table">
+      <thead><tr><th>Step</th><th>Method</th><th>Purpose</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><td>Model selection</td><td>Nested Cross-Validation (on train set)</td><td>Which model and parameters?</td><td>CV F1: 0.779</td></tr>
+        <tr class="best"><td>Final proof</td><td>Held-out 20% test set</td><td>How well does it truly generalise?</td><td>Test F1: 0.787</td></tr>
+      </tbody>
+    </table>
+    <div class="finding green">
+      <strong>Final test set:</strong> After all model selection, we evaluate the best
+      model exactly once on the completely held-out 20% test set that was never seen during
+      training or cross-validation. The F1 = 0.787 and AUC = 0.883 reported throughout
+      this site are test set results.
+    </div>
+
+    <h3>Evaluation Metrics</h3>
+    <table class="result-table">
+      <thead><tr><th>Metric</th><th>What it measures</th><th>Range</th></tr></thead>
+      <tbody>
+        <tr><td><strong>F1 Score</strong></td><td>Harmonic mean of precision and recall — the main metric we use because the dataset is not perfectly balanced</td><td>0–1 (higher = better)</td></tr>
+        <tr><td><strong>Accuracy</strong></td><td>Percentage of texts correctly classified (both sarcastic and normal)</td><td>0–100%</td></tr>
+        <tr><td><strong>AUC</strong></td><td>Area Under the ROC Curve — how well the model ranks sarcastic texts above normal ones across all possible thresholds</td><td>0–1 (0.5 = random guessing)</td></tr>
+        <tr><td><strong>Precision</strong></td><td>Of all texts predicted as sarcastic, how many actually were?</td><td>0–1</td></tr>
+        <tr><td><strong>Recall</strong></td><td>Of all actually sarcastic texts, how many did the model catch?</td><td>0–1</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ── Step 1 ── -->
+<section id="step1">
+  <div class="container">
+    <div class="section-label">05 — Step 1: Baseline on News Headlines</div>
+    <h2>Testing 5 Feature Sets × 3 Models on News Headlines</h2>
+    <p>
+      We start by building baseline models on news headlines only. This answers our three
+      research questions and establishes a performance ceiling — before we discover
+      the leakage problem in Step 2.
+    </p>
+    <hr style="border:none;border-top:1px solid var(--border);margin:24px 0;" />
+    <div class="section-label" style="margin-top:8px;">Research Question 1</div>
+    <div class="rq-header">
+      <div class="rq-num">1</div>
+      <div class="rq-question">
+        Does sarcasm reveal itself more through <em>what</em> is said (word content)
+        or <em>how</em> it is said (punctuation, sentence length, writing style)?
+      </div>
+    </div>
+
+    <h3>Methodology</h3>
+    <p>
+      We train all three models (Logistic Regression, Linear SVM, Random Forest) on
+      five feature sets on the news headlines dataset using 5-Fold Cross-Validation.
+      This tells us which feature type carries a stronger sarcasm signal within a
+      single domain. We then test the same models on forum comments (an unseen domain)
+      to see which features generalise better.
+    </p>
+
+    <h3>Results — News Headlines (5-Fold Cross-Validation)</h3>
+    <div class="fig-block">
+      <img src="./visuals/figures/SectionA_News_F1_All_Feature_Sets.png" alt="Section A results" />
+      <p class="fig-caption">Fig 3 — F1 Score by feature set and model | News Headlines | 5-Fold Cross-Validation</p>
+    </div>
+
+    <table class="result-table">
+      <thead><tr><th>Feature Set</th><th>LR F1</th><th>SVM F1</th><th>RF F1</th></tr></thead>
+      <tbody>
+        <tr><td>Stylistic Features (punctuation, length)</td><td class="num">0.497</td><td class="num">0.493</td><td class="num">0.506</td></tr>
+        <tr><td>Word Frequency (single words)</td><td class="num">0.819</td><td class="num">0.815</td><td class="num">0.787</td></tr>
+        <tr class="best"><td>Word Frequency + Stylistic Features</td><td class="num">0.827</td><td class="num">0.827</td><td class="num">0.791</td></tr>
+        <tr><td>Word Pairs Only</td><td class="num">0.662</td><td class="num">0.729</td><td class="num">0.712</td></tr>
+        <tr><td>Words &amp; Pairs</td><td class="num">0.821</td><td class="num">0.821</td><td class="num">0.784</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Cross-Domain Results — Models Tested on Forum Comments</h3>
+    <div class="fig-block">
+      <img src="./visuals/figures/RQ1_Cross_Domain_Generalizability.png" alt="Cross domain" />
+      <p class="fig-caption">Fig 4 — Word Frequency vs Stylistic Features: performance on News Headlines vs Forum Comments | Logistic Regression | Test Set F1</p>
+    </div>
+
+    <h3>Interpretation</h3>
+    <div class="finding">
+      <strong>Within news headlines:</strong> Word frequency signals (F1: 0.819) far outperform
+      stylistic features (F1: 0.497). The specific words used in a headline carry a strong
+      sarcasm signal within this domain.
+    </div>
+    <div class="finding blue">
+      <strong>Across domains:</strong> The picture reverses completely. On forum comments,
+      stylistic features (F1: 0.363) dramatically outperform word frequency features (F1: 0.120).
+      Stylistic signals generalise; word-content signals do not — because words that signal
+      sarcasm in news headlines may be completely different from those used in forum comments.
+    </div>
+    <div class="finding green">
+      <strong>Answer to RQ1:</strong> Neither approach alone is sufficient.
+      Word content wins in a single domain; writing style wins across domains.
+      The best model combines both features and achieves a test F1 of <strong>0.787</strong>
+      on the combined dataset — confirming that sarcasm involves both what is said and how it is said.
+      Notably, Random Forest outperforms linear models on stylistic features alone (0.506 vs 0.497),
+      because tree-based models handle numerical features more naturally.
+    </div>
+  </div>
+</section>
+
+<!-- ── RQ2 inside Step 1 ── -->
+<section id="rq2" style="padding-top:0;border-top:none;">
+  <div class="container">
+    <hr style="border:none;border-top:1px solid var(--border);margin:0 0 40px 0;" />
+    <div class="section-label">Research Question 2</div>
+    <div class="rq-header">
+      <div class="rq-num">2</div>
+      <div class="rq-question">
+        How and how often do standard sentiment analysis tools mistakenly
+        score sarcastic content as positive — and does this problem get worse
+        in longer, more conversational texts?
+      </div>
+    </div>
+
+    <h3>Methodology</h3>
+    <p>
+      We apply two widely-used sentiment analysis tools — <strong>VADER</strong>
+      and <strong>TextBlob</strong> — to both datasets separately.
+      Both tools work by assigning positive or negative scores to individual words
+      and aggregating them to produce an overall sentiment score.
+      We measure the "misleading rate": the percentage of genuinely sarcastic texts
+      that each tool incorrectly scores as positive.
+    </p>
+    <p>
+      We also examine the distribution of sentiment scores and measure how often
+      inherently positive words ("great", "amazing", "wonderful") appear in
+      sarcastic vs normal texts.
+    </p>
+
+    <h3>Results</h3>
+    <div class="fig-row">
+      <div class="fig-block">
+        <img src="./visuals/figures/RQ2_Sentiment_Score_Distribution.png" alt="Sentiment distribution" />
+        <p class="fig-caption">Fig 5 — Sentiment score distributions for normal vs sarcastic headlines | VADER and TextBlob</p>
+      </div>
+      <div class="fig-block">
+        <img src="./visuals/figures/RQ2_Positive_Word_Frequency.png" alt="Positive word frequency" />
+        <p class="fig-caption">Fig 6 — How often positive words appear in sarcastic vs normal headlines</p>
+      </div>
+    </div>
+    <div class="fig-block">
+      <img src="./visuals/figures/RQ2_Misleading_Rate_News_vs_Forum.png" alt="Misleading rates" />
+      <p class="fig-caption">Fig 7 — Percentage of sarcastic texts mistakenly scored as positive | News Headlines vs Forum Comments</p>
+    </div>
+
+    <h3>Most Deceiving Headline</h3>
+    <div class="finding">
+      <em>"Russia managed to penetrate voter databases in order to ensure the election was fair and free like the loyal allies they are"</em><br>
+      <strong>VADER score: 0.915</strong> (near maximum positive). Words like "fair", "free",
+      and "loyal" trigger a high positive score — yet the sentence is clearly sarcastic.
+    </div>
+
+    <h3>Why Forum Comments Are Harder for Sentiment Tools</h3>
+    <p>
+      The misleading rate is substantially higher for forum comments (VADER: 46.8%, TextBlob: 49.5%)
+      than for news headlines (VADER: 31.4%, TextBlob: 31.6%). There are two reasons for this:
+    </p>
+    <ul>
+      <li>
+        <strong>Length effect:</strong> Forum comments average ~35 words, news headlines ~10 words.
+        VADER and TextBlob work by adding up the sentiment scores of individual words.
+        A longer text has more chances to include positive-sounding words — even if the
+        overall intent is sarcastic. More positive words → higher positive aggregate score
+        → more likely to be misclassified.
+      </li>
+      <li>
+        <strong>Style effect:</strong> Forum sarcasm is often more subtle and elaborate.
+        Sarcastic news headlines tend to be direct parodies ("Area Man Does X").
+        Forum comments often build a long argument before revealing the sarcasm, giving
+        sentiment tools more misleading positive vocabulary to latch onto.
+      </li>
+    </ul>
+
+    <h3>Interpretation</h3>
+    <div class="finding green">
+      <strong>Answer to RQ2:</strong> Both tools fail at structurally similar rates —
+      VADER and TextBlob perform nearly identically. This is not a tool-specific bug;
+      it is a fundamental limitation of word-level sentiment scoring. Sarcasm
+      intentionally uses positive vocabulary to convey negative meaning, and any tool
+      that ignores sentence-level context will be systematically deceived.
+      The problem is worse in longer texts because the accumulation of positive words
+      overwhelms the negative intent.
+    </div>
+  </div>
+</section>
+
+<!-- ── RQ3 inside Step 1 ── -->
+<section id="rq3" style="padding-top:0;border-top:none;">
+  <div class="container">
+    <hr style="border:none;border-top:1px solid var(--border);margin:0 0 40px 0;" />
+    <div class="section-label">Research Question 3</div>
+    <div class="rq-header">
+      <div class="rq-num">3</div>
+      <div class="rq-question">
+        Does capturing word pairs (e.g. "area man", "study finds") meaningfully
+        improve sarcasm detection beyond looking at single words alone?
+      </div>
+    </div>
+
+    <h3>Methodology</h3>
+    <p>
+      We compare three word-frequency configurations: single words only, word pairs only,
+      and both combined. All three are tested with all three models on both datasets.
+      Word pairs capture local context that single words miss — for example, "area man"
+      is a much stronger sarcasm signal than "area" or "man" individually.
+    </p>
+    <p>
+      <strong>Why test word pairs?</strong> Sarcasm often relies on specific phrase patterns.
+      The Onion famously uses templates like "Area Man Does X" or "Nation's [Group] Reports Y".
+      If these patterns are informative, word pairs should outperform single words.
+    </p>
+
+    <div class="fig-block">
+      <img src="./visuals/figures/RQ3_Combined_Ngram_Comparison.png" alt="RQ3 results" />
+      <p class="fig-caption">Fig 8 — Single words vs word pairs vs both combined | News Headlines + Forum Comments | F1 (Nested Cross-Validation)</p>
+    </div>
+
+    <table class="result-table">
+      <thead><tr><th>Feature Set</th><th>LR F1 (News)</th><th>SVM F1 (News)</th><th>RF F1 (News)</th></tr></thead>
+      <tbody>
+        <tr><td>Word Frequency (single words)</td><td class="num">0.819</td><td class="num">0.815</td><td class="num">0.787</td></tr>
+        <tr><td>Word Pairs Only</td><td class="num">0.662</td><td class="num">0.729</td><td class="num">0.712</td></tr>
+        <tr class="best"><td>Words &amp; Pairs (combined)</td><td class="num">0.821</td><td class="num">0.821</td><td class="num">0.784</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Interpretation</h3>
+    <div class="finding">
+      <strong>Word pairs alone underperform.</strong> At F1 = 0.662 (Logistic Regression, news),
+      word pairs alone are substantially weaker than single words. Without single-word context,
+      the model loses too much vocabulary coverage.
+    </div>
+    <div class="finding blue">
+      <strong>Combining words and pairs gives minimal improvement.</strong>
+      Adding word pairs to single words improves F1 by only 0.002 on news headlines
+      and 0.005 on the combined dataset — practically no difference.
+    </div>
+    <div class="finding green">
+      <strong>Answer to RQ3:</strong> Word pairs alone are not sufficient, and adding them
+      to single words provides only marginal improvement. Sarcasm detection requires understanding
+      broader context — the intent of an entire sentence, cultural references, and tonal cues
+      that go far beyond two-word combinations. This points to a fundamental ceiling of
+      bag-of-words approaches, whether unigrams or bigrams.
+    </div>
+  </div>
+</section>
+
+<!-- ── Step 2 ── -->
+<section id="step2">
+  <div class="container">
+    <div class="section-label">06 — Step 2: Did the Model Learn the Right Thing?</div>
+    <h2>Leakage Detection — The Model Learned Writing Style, Not Sarcasm</h2>
+    <div class="bridge">
+      <span class="arrow">←</span>
+      <p><strong>Coming from Step 1:</strong> Our baseline scored F1 = 0.827 on news headlines — suspiciously high. Before trusting it, we must check <em>what</em> the model actually learned.</p>
+    </div>
+    <p>
+      The baseline achieved F1 = 0.827 on news headlines. Before moving on, we must
+      ask: <em>what did the model actually learn?</em> The answer reveals a critical
+      problem — and motivates everything in Steps 3 and 4.
+    </p>
+    <p>
+      After achieving strong results on news headlines (F1: 0.827), we investigated
+      <em>what</em> the model actually learned. The answer was unexpected — and revealed
+      a fundamental problem with training on single-source data.
+    </p>
+
+    <h3>Section B — Why We Did Coefficient Analysis</h3>
+    <p>
+      Logistic Regression assigns a numerical weight (coefficient) to every word in its
+      vocabulary. A high positive coefficient means the word strongly predicts sarcasm;
+      a high negative coefficient means the word strongly predicts normal content.
+      By reading the top coefficients, we can see exactly which words the model
+      treats as sarcasm signals.
+    </p>
+    <div class="fig-block">
+      <img src="./visuals/figures/SectionB_Leakage_Top_Influential_Words.png" alt="Leakage tokens" />
+      <p class="fig-caption">Fig 9 — Words with the highest weights in the Logistic Regression model | Word Frequency (Single Words) feature set</p>
+    </div>
+    <div class="finding">
+      The word <strong>"onion"</strong> ranks 14th among the most predictive sarcasm words
+      (weight: 3.09). Words like "area", "man", "nation", "report", and "local" — all
+      characteristic of The Onion's distinctive writing style — dominate the top of the list.
+      The model has learned to recognise <em>The Onion's voice</em>, not sarcasm itself.
+    </div>
+
+    <h3>Why Coefficient Analysis Alone Is Not Enough</h3>
+    <p>
+      Seeing "onion" in the top tokens is suspicious, but it could be coincidental.
+      Perhaps "onion" genuinely co-occurs with sarcasm for linguistic reasons we haven't
+      considered. The coefficient analysis gives us a strong hypothesis — but a hypothesis
+      is not proof. We need a proper test.
+    </p>
+
+    <h3>Section C — The Proof: Testing on an Unseen Domain</h3>
+    <p>
+      If the model learned genuine sarcasm signals, it should work on <em>any</em> sarcastic text —
+      not just The Onion's headlines. So we tested it on the forum comments dataset,
+      which the model had never seen and which has no connection to The Onion.
+    </p>
+    <div class="fig-block">
+      <img src="./visuals/figures/SectionC_Leakage_F1_Drop_News_vs_Forum.png" alt="F1 drop" />
+      <p class="fig-caption">Fig 10 — F1 Score on News Headlines vs Forum Comments | Logistic Regression trained on news, tested on forum | Test Set F1</p>
+    </div>
+    <div class="fig-block">
+      <img src="./visuals/figures/SectionC_Leakage_Confusion_Matrices.png" alt="Confusion matrices" />
+      <p class="fig-caption">Fig 11 — Confusion matrices on Forum Comments for each feature set | Logistic Regression | Test Set</p>
+    </div>
+
+    <table class="result-table">
+      <thead><tr><th>Feature Set (Logistic Regression)</th><th>News F1 (CV)</th><th>Forum F1 (Test)</th><th>Drop</th></tr></thead>
+      <tbody>
+        <tr><td>Word Frequency (single words)</td><td class="num">0.819</td><td class="num">0.120</td><td class="num" style="color:var(--accent)">−0.699</td></tr>
+        <tr><td>Stylistic Features</td><td class="num">0.497</td><td class="num">0.363</td><td class="num" style="color:#e08214">−0.134</td></tr>
+        <tr><td>Word Frequency + Stylistic</td><td class="num">0.827</td><td class="num">0.260</td><td class="num" style="color:var(--accent)">−0.567</td></tr>
+        <tr><td>Word Pairs Only</td><td class="num">0.662</td><td class="num">0.218</td><td class="num" style="color:var(--accent)">−0.444</td></tr>
+        <tr><td>Words &amp; Pairs</td><td class="num">0.821</td><td class="num">0.113</td><td class="num" style="color:var(--accent)">−0.708</td></tr>
+      </tbody>
+    </table>
+
+    <div class="finding">
+      <strong>Word frequency collapses completely:</strong> F1 drops from 0.819 to 0.120 —
+      barely above random guessing. The model that seemed excellent on news headlines
+      is essentially useless on forum comments. This is the proof: if it had learned
+      sarcasm, it would still detect sarcasm in forum comments.
+    </div>
+    <div class="finding blue">
+      <strong>Stylistic features are the most resilient:</strong> F1 drops only from 0.497
+      to 0.363 — a much smaller fall. Punctuation patterns and sentence length are more
+      universal sarcasm signals that transfer across domains.
+    </div>
+    <div class="finding">
+      <strong>Words &amp; Pairs shows the largest drop (−0.708):</strong> The more vocabulary
+      the model learns, the more domain-specific patterns it memorises, and the worse
+      it performs on an unseen domain.
+    </div>
+    <div class="finding green">
+      <strong>Conclusion:</strong> The coefficient analysis (Section B) and the cross-domain
+      test (Section C) together confirm source leakage. The model learned The Onion's writing
+      style, not sarcasm. Section D addresses this by training on data from both domains.
+    </div>
+  </div>
+</section>
+
+<!-- ── Step 3 ── -->
+<section id="step3">
+  <div class="container">
+    <div class="section-label">07 — Step 3: Fix Leakage with Combined Training Data</div>
+    <h2>Training on News Headlines + Forum Comments Together</h2>
+    <div class="bridge">
+      <span class="arrow">←</span>
+      <p><strong>Coming from Step 2:</strong> We proved the news-only model learned The Onion's writing style, not sarcasm — it scored just 0.120 on forum comments. Now we fix it.</p>
+    </div>
+    <p>
+      We know the news-only model learned The Onion's writing style.
+      The fix: train on both domains simultaneously. A model that sees sarcasm
+      from news headlines <em>and</em> forum comments can no longer rely on
+      source-specific vocabulary — it must find signals that work in both.
+    </p>
+    <p>
+      To address the leakage problem, we combine both datasets — news headlines and
+      forum comments — into a single training corpus. By seeing sarcasm from two very
+      different domains, the model can no longer rely on source-specific vocabulary.
+      It must find signals that work in both.
+    </p>
+
+    <h3>Setup</h3>
+    <ul>
+      <li>33,010 texts combined (80% news, 20% forum)</li>
+      <li>Stratified 80/20 train/test split — the 20% test set is set aside and never touched until final evaluation</li>
+      <li>Numerical stylistic features are standardised (StandardScaler fitted on training data only, then applied to test — prevents data leakage)</li>
+      <li>Nested Cross-Validation on the training set: inner loop optimises model parameters, outer loop evaluates performance</li>
+      <li>All 5 feature sets × 3 models = 15 experiments</li>
+    </ul>
+
+    <div class="fig-block">
+      <img src="./visuals/figures/SectionD_Combined_F1_All_Feature_Sets.png" alt="Section D results" />
+      <p class="fig-caption">Fig 12 — F1 Score by feature set and model | News Headlines + Forum Comments | Nested Cross-Validation</p>
+    </div>
+
+    <table class="result-table">
+      <thead><tr><th>Feature Set</th><th>LR F1</th><th>SVM F1</th><th>RF F1</th></tr></thead>
+      <tbody>
+        <tr><td>Stylistic Features</td><td class="num">0.538</td><td class="num">0.365</td><td class="num"><strong>0.563</strong></td></tr>
+        <tr><td>Word Frequency (single words)</td><td class="num"><strong>0.769</strong></td><td class="num">0.758</td><td class="num">0.736</td></tr>
+        <tr class="best"><td>Word Frequency + Stylistic</td><td class="num"><strong>0.779</strong></td><td class="num">0.771</td><td class="num">0.754</td></tr>
+        <tr><td>Word Pairs Only</td><td class="num">0.697</td><td class="num">0.682</td><td class="num">0.672</td></tr>
+        <tr><td>Words &amp; Pairs</td><td class="num">0.774</td><td class="num">0.765</td><td class="num">0.740</td></tr>
+      </tbody>
+    </table>
+
+    <div class="finding blue">
+      <strong>Random Forest wins on Stylistic Features alone (0.563 vs LR 0.538).</strong>
+      Tree-based models handle numerical features naturally — they can capture non-linear
+      combinations of punctuation counts and word lengths that linear models miss.
+    </div>
+
+    <h3>Final Evaluation — Held-Out Test Set</h3>
+    <p>
+      The best model (Logistic Regression, Word Frequency + Stylistic Features) is
+      evaluated exactly once on the 20% held-out test set.
+    </p>
+    <div class="fig-row">
+      <div class="fig-block">
+        <img src="./visuals/figures/SectionD_Best_Model_Confusion_Matrix.png" alt="Confusion matrix" />
+        <p class="fig-caption">Fig 13 — Confusion matrix | Logistic Regression | Word Freq. + Stylistic Features | Test Set</p>
+      </div>
+      <div class="fig-block">
+        <img src="./visuals/figures/SectionD_Best_Model_ROC_Curve.png" alt="ROC curve" />
+        <p class="fig-caption">Fig 14 — ROC Curve | Logistic Regression | Word Freq. + Stylistic Features | Test Set (AUC = 0.883)</p>
+      </div>
+    </div>
+
+    <table class="result-table">
+      <thead><tr><th>Class</th><th>Precision</th><th>Recall</th><th>F1</th><th>Support</th></tr></thead>
+      <tbody>
+        <tr><td>Normal (not sarcastic)</td><td class="num">0.83</td><td class="num">0.81</td><td class="num">0.82</td><td class="num">3,629</td></tr>
+        <tr><td>Sarcastic</td><td class="num">0.77</td><td class="num">0.80</td><td class="num">0.79</td><td class="num">2,973</td></tr>
+        <tr class="best"><td>Overall (weighted average)</td><td class="num">0.80</td><td class="num">0.80</td><td class="num">0.787</td><td class="num">6,602</td></tr>
+      </tbody>
+    </table>
+    <p>
+      Overall accuracy is <strong>80.5%</strong> and the AUC is <strong>0.883</strong>.
+      The model is slightly better at identifying normal texts (precision 0.83) than
+      sarcastic ones (precision 0.77) — sarcasm is inherently harder to pin down — but
+      recall is balanced across both classes (0.81 vs 0.80), meaning the model does not
+      systematically miss one class.
+    </p>
+
+    <div class="finding green">
+      <strong>AUC = 0.883</strong> means the model correctly ranks a randomly chosen sarcastic
+      text above a randomly chosen normal text 88.3% of the time — well above random (0.5).
+      This confirms the model has learned genuine discriminative signals, not source-specific patterns.
+    </div>
+
+
+    <table class="result-table">
+      <thead><tr><th>Stage</th><th>Model</th><th>F1</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td>News headlines baseline (Step 1)</td><td>LR | Word Freq. + Stylistic</td><td class="num">0.827</td><td>5-Fold CV — source leakage present</td></tr>
+        <tr><td>Leakage confirmed (Step 2)</td><td>LR | Word Frequency</td><td class="num">0.120</td><td>Trained on news, tested on forum</td></tr>
+        <tr class="best"><td>Combined model (Step 3 — test set)</td><td>LR | Word Freq. + Stylistic</td><td class="num">0.787</td><td>20% held-out test, no leakage</td></tr>
+      </tbody>
+    </table>
+    <div class="finding blue">
+      The combined model scores lower than the news-only baseline (0.787 vs 0.827).
+      This is expected and honest — the baseline's high score was partly due to source leakage.
+      The combined model's 0.787 is a more truthful measure of genuine sarcasm detection capability.
+      <strong>Step 4 investigates whether this score is equally good on both domains.</strong>
+    </div>
+  </div>
+</section>
+
+<!-- ── Step 4 ── -->
+<section id="step4">
+  <div class="container">
+    <div class="section-label">08 — Step 4: Is the Model Truly Domain-Independent?</div>
+    <h2>Domain-Specific Testing and Balanced Training</h2>
+    <div class="bridge">
+      <span class="arrow">←</span>
+      <p><strong>Coming from Step 3:</strong> The combined model reached F1 = 0.787 with no leakage. But is that score equally good on both domains, or does an imbalance remain? We dig deeper.</p>
+    </div>
+    <p>
+      The combined model achieves F1 = 0.787 overall — but is this score equally good
+      on news headlines and forum comments? We split the held-out test set by source
+      and evaluate separately. <strong>None of these rows were seen during training.</strong>
+    </p>
+
+    <h3>4a — Domain-Specific Test Results</h3>
+    <div class="fig-block">
+      <img src="./visuals/figures/SectionD_Domain_Specific_Test_Results.png"
+           alt="Domain-specific test results" />
+      <p class="fig-caption">Fig 15 — F1 Score by domain | Logistic Regression | Word Freq. + Stylistic Features | Held-out test set (never seen during training)</p>
+    </div>
+    <table class="result-table">
+      <thead>
+        <tr><th>Test Set</th><th>F1 Score</th><th>Accuracy</th><th>Texts</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>News Headlines (unseen)</td><td class="num">0.822</td><td class="num">83.9%</td><td class="num">5,310</td></tr>
+        <tr><td>Forum Comments (unseen)</td><td class="num">0.654</td><td class="num">66.7%</td><td class="num">1,292</td></tr>
+        <tr class="best"><td>Combined (News + Forum)</td><td class="num">0.787</td><td class="num">80.5%</td><td class="num">6,602</td></tr>
+      </tbody>
+    </table>
+    <div class="finding">
+      <strong>A gap exists: News F1 = 0.822 vs Forum F1 = 0.654.</strong>
+      The model performs better on the domain it saw more of — 80% of training data
+      was news headlines. This is the domain imbalance limitation in action.
+      Forum F1 = 0.654 is still well above random (0.5), showing the combined
+      training strategy partially worked.
+    </div>
+
+    <h3>4b — Balanced Training Experiment</h3>
+    <p>
+      To test whether balancing training data closes the gap, we downsample news headlines
+      to match the forum size (6,520 each) using stratified sampling — preserving the
+      sarcastic/normal ratio. The train/test split is done <em>after</em> downsampling,
+      so the test set was never seen during training.
+    </p>
+
+    <div class="fig-block">
+      <img src="./visuals/figures/SectionE_Balanced_vs_Imbalanced.png"
+           alt="Balanced vs imbalanced comparison" />
+      <p class="fig-caption">Fig 16 — Imbalanced (26,490 + 6,520) vs Balanced (6,520 + 6,520) training | Logistic Regression | Word Freq. + Stylistic Features | Test Set F1</p>
+    </div>
+
+    <table class="result-table">
+      <thead>
+        <tr><th>Training Data</th><th>Overall F1</th><th>News F1</th><th>Forum F1</th><th>Accuracy</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Imbalanced (26,490 news + 6,520 forum)</td>
+          <td class="num"><strong>0.787</strong></td>
+          <td class="num">0.822</td>
+          <td class="num">0.654</td>
+          <td class="num">80.5%</td>
+        </tr>
+        <tr>
+          <td>Balanced (6,520 news + 6,520 forum)</td>
+          <td class="num">0.726</td>
+          <td class="num">0.727</td>
+          <td class="num"><strong>0.725</strong></td>
+          <td class="num">73.6%</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="finding">
+      <strong>Balanced model closes the domain gap almost completely:</strong>
+      News F1 = 0.727 vs Forum F1 = 0.725 — a difference of only 0.002.
+      The model now performs equally well on both domains, confirming that
+      the gap in the imbalanced model was caused by training data imbalance,
+      not an inherent difference in task difficulty.
+    </div>
+    <div class="finding blue">
+      <strong>Trade-off — lower overall F1:</strong>
+      The balanced model achieves F1 = 0.726 vs 0.787 for the imbalanced model.
+      Training on ~13,000 texts instead of ~33,000 means less data overall,
+      which reduces overall performance. The choice depends on the goal:
+      higher average performance (imbalanced) or fairer cross-domain performance (balanced).
+    </div>
+    <div class="finding green">
+      <strong>Key insight:</strong> Domain balance in training data directly controls
+      domain balance in model performance. For any real-world sarcasm detection system
+      deployed across multiple domains, balanced multi-domain training is essential —
+      even at the cost of some overall accuracy.
+    </div>
+  </div>
+</section>
+
+<!-- ── Discussion ── -->
+<section id="discussion">
+  <div class="container">
+    <div class="section-label">09 — Discussion &amp; Limitations</div>
+    <h2>What We Learned — and What We Didn't</h2>
+
+    <h3>Key Findings</h3>
+    <ul>
+      <li>Classical machine learning can detect sarcasm with meaningful accuracy (F1: 0.787, AUC: 0.883) when trained on multi-domain data.</li>
+      <li>Word content signals are stronger within a single domain but do not generalise. Stylistic signals are weaker but more universal.</li>
+      <li>Combining both feature types consistently outperforms either alone.</li>
+      <li>Standard sentiment tools (VADER, TextBlob) structurally fail at sarcasm — they misclassify 31–50% of sarcastic texts as positive depending on domain.</li>
+      <li>Source leakage is a real and underappreciated risk in single-source datasets. A model can appear excellent while learning the wrong thing entirely.</li>
+      <li>Word pairs add minimal value over single words — sarcasm requires broader contextual understanding than two-word patterns can provide.</li>
+    </ul>
+
+    <h3>Limitations and Threats to Validity</h3>
+    <ul>
+      <li><strong>Residual leakage:</strong> Even the combined model may retain some source-specific signals. A fully leakage-free model would require balanced multi-source data from many different publications and platforms.</li>
+      <li><strong>Domain imbalance:</strong> The combined dataset is 80% news headlines and 20% forum comments. The model still sees more news-style sarcasm during training, which may bias it toward that style.</li>
+      <li><strong>Text length mismatch:</strong> News headlines (~10 words) and forum comments (~35 words) differ structurally. StandardScaler mitigates length-based feature differences but does not eliminate them.</li>
+      <li><strong>Classical model ceiling:</strong> The maximum achievable F1 with bag-of-words approaches is limited. Sarcasm ultimately requires understanding intent, tone, and cultural context — capabilities that transformer-based language models (e.g. BERT, GPT) would handle substantially better.</li>
+      <li><strong>Binary classification:</strong> We treat all sarcasm as a single category. In reality, sarcasm ranges from mild irony to heavy satire, and different subtypes may require different detection approaches.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ── Reproduce ── -->
+<section id="reproduce">
+  <div class="container">
+    <div class="section-label">10 — Reproducibility</div>
+    <h2>Run This Project From Scratch</h2>
+
+    <h3>1. Clone the repository</h3>
+    <pre>git clone https://github.com/BILGI-IE-423/ie423-2025-2026-termproject-0xdeadbeef
+cd ie423-2025-2026-termproject-0xdeadbeef</pre>
+
+    <h3>2. Install dependencies</h3>
+    <pre>pip install -r requirements.txt
+python -m textblob.download_corpora</pre>
+
+    <h3>3. Place the datasets in data/raw/</h3>
+    <ul>
+      <li><a href="https://www.kaggle.com/datasets/rmisra/news-headlines-dataset-for-sarcasm-detection" target="_blank">Sarcasm_Headlines_Dataset.json</a> — News Headlines Dataset</li>
+      <li><a href="https://www.kaggle.com/datasets/coldn00ldes/sarcasm-corpus-v2oraby-et-al" target="_blank">GEN-sarc-notsarc.csv</a> — Sarcasm Corpus V2 (GEN subset)</li>
+    </ul>
+
+    <h3>4. Run scripts in order</h3>
+    <pre>python scripts/01_load_data.py
+python scripts/02_preprocess_data.py
+python scripts/03_basic_eda.py
+python scripts/04_sentiment_analysis.py
+python scripts/05_preprocess_gen.py
+python scripts/05b_combine_datasets.py
+python scripts/06_modeling.py</pre>
+
+    <p>All figures are saved to <code>visuals/figures/</code> and all tables to <code>visuals/tables/</code>. Every output shown on this page is produced by the scripts above — no manually placed images.</p>
+
+    <div class="finding blue">
+      <strong>Repository:</strong>
+      <a href="https://github.com/BILGI-IE-423/ie423-2025-2026-termproject-0xdeadbeef" target="_blank">github.com/BILGI-IE-423/ie423-2025-2026-termproject-0xdeadbeef</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="inner">
+    <span>IE 423 — Machine Learning Applications in Industrial Engineering</span>
+    <span>Ada Güner Nohut &nbsp;·&nbsp; Onur Sarıdoğan &nbsp;·&nbsp; Veli Erenay Açıl</span>
+  </div>
+</footer>
+
+<!-- Lightbox overlay for enlarging figures -->
+<div class="lightbox" id="lightbox">
+  <span class="close-hint" id="lightboxClose">✕ Close (Esc)</span>
+  <img id="lightboxImg" src="" alt="Enlarged figure" />
+</div>
+
+<script>
+  (function () {
+    const lightbox    = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const closeHint   = document.getElementById('lightboxClose');
+
+    // Open lightbox when any figure image is clicked
+    document.querySelectorAll('.fig-block img').forEach(function (img) {
+      img.addEventListener('click', function () {
+        lightboxImg.src = img.src;
+        lightboxImg.alt = img.alt;
+        lightbox.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    // Close lightbox
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      document.body.style.overflow = '';
+      lightboxImg.src = '';
+    }
+
+    // Click anywhere on the overlay (except the image itself) closes it
+    lightbox.addEventListener('click', function (e) {
+      if (e.target !== lightboxImg) closeLightbox();
+    });
+    closeHint.addEventListener('click', closeLightbox);
+
+    // Esc key closes it
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && lightbox.classList.contains('open')) {
+        closeLightbox();
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>
