@@ -37,8 +37,8 @@ Place both files in `data/raw/` before running the scripts:
 
 | Dataset | Source | File |
 |---|---|---|
-| News Headlines | [Kaggle — rmisra](https://www.kaggle.com/datasets/rmisra/news-headlines-dataset-for-sarcasm-detection) | `Sarcasm_Headlines_Dataset.json` |
-| Forum Comments (GEN) | [Kaggle — coldn00ldes](https://www.kaggle.com/datasets/coldn00ldes/sarcasm-corpus-v2oraby-et-al) | `GEN-sarc-notsarc.csv` |
+| News Headlines | [Kaggle](https://www.kaggle.com/datasets/rmisra/news-headlines-dataset-for-sarcasm-detection) | `Sarcasm_Headlines_Dataset.json` |
+| Forum Comments (GEN) | [Kaggle](https://www.kaggle.com/datasets/coldn00ldes/sarcasm-corpus-v2oraby-et-al) | `GEN-sarc-notsarc.csv` |
 
 ---
 
