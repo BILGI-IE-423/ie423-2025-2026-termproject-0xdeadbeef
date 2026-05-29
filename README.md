@@ -22,9 +22,9 @@ problem, and show that balanced multi-domain training significantly improves
 cross-domain generalisation.
 
 **Three research questions:**
-1. Does sarcasm reveal itself more through *what* is said (word content) or *how* it is said (punctuation, sentence length, writing style)?
-2. How and how often do standard sentiment tools (VADER, TextBlob) mistakenly score sarcastic content as positive — and does this get worse in longer texts?
-3. Does capturing word pairs (e.g. "area man") meaningfully improve sarcasm detection beyond single words?
+1. Does sarcasm reveal itself more through what is said (word content) or how it is said (punctuation, sentence length, writing style)?
+2. How and how often do standard sentiment analysis tools mistakenly score sarcastic content as positive — and does this problem get worse in longer, more conversational texts?
+3. Does capturing word pairs (e.g. "area man", "study finds") meaningfully improve sarcasm detection beyond looking at single words alone?
 
 **Best model:** Logistic Regression | Word Frequency + Stylistic Features  
 **Test F1:** 0.787 | **AUC:** 0.883 | **Accuracy:** 80.5%
@@ -37,8 +37,8 @@ Place both files in `data/raw/` before running the scripts:
 
 | Dataset | Source | File |
 |---|---|---|
-| News Headlines | [Kaggle — rmisra](https://www.kaggle.com/datasets/rmisra/news-headlines-dataset-for-sarcasm-detection) | `Sarcasm_Headlines_Dataset.json` |
-| Forum Comments (GEN) | [Kaggle — coldn00ldes](https://www.kaggle.com/datasets/coldn00ldes/sarcasm-corpus-v2oraby-et-al) | `GEN-sarc-notsarc.csv` |
+| News Headlines | [Kaggle](https://www.kaggle.com/datasets/rmisra/news-headlines-dataset-for-sarcasm-detection) | `Sarcasm_Headlines_Dataset.json` |
+| Forum Comments (GEN) | [Kaggle](https://www.kaggle.com/datasets/coldn00ldes/sarcasm-corpus-v2oraby-et-al) | `GEN-sarc-notsarc.csv` |
 
 ---
 
