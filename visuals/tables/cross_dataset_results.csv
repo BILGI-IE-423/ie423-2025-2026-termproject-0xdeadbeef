@@ -1,0 +1,6 @@
+Scenario,News CV F1,GEN F1,F1 Drop
+Word Frequency (Single Words),0.819,0.12,0.699
+Stylistic Features,0.497,0.363,0.134
+Word Freq. + Stylistic Features,0.827,0.26,0.567
+Word Pairs Only,0.662,0.218,0.444
+Words & Pairs,0.821,0.113,0.708

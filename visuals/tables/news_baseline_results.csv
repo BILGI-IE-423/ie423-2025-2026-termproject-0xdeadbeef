@@ -1,0 +1,16 @@
+Feature Set,Model,Accuracy,Precision,Recall,F1,F1 Std
+Engineered Only,Logistic Regression,0.613,0.578,0.436,0.497,0.01
+Engineered Only,SVM,0.614,0.582,0.427,0.493,0.01
+TF-IDF Unigram,Logistic Regression,0.843,0.827,0.812,0.819,0.005
+TF-IDF Unigram,SVM,0.839,0.82,0.811,0.815,0.006
+TF-IDF + Engineered,Logistic Regression,0.849,0.832,0.822,0.827,0.003
+TF-IDF + Engineered,SVM,0.849,0.831,0.823,0.827,0.006
+Engineered Only,Random Forest,0.609,0.567,0.457,0.506,0.007
+TF-IDF Unigram,Random Forest,0.811,0.776,0.799,0.787,0.008
+TF-IDF + Engineered,Random Forest,0.817,0.793,0.789,0.791,0.007
+TF-IDF Bigram,Logistic Regression,0.742,0.776,0.578,0.662,0.005
+TF-IDF Bigram,SVM,0.747,0.686,0.778,0.729,0.003
+TF-IDF Bigram,Random Forest,0.724,0.657,0.778,0.712,0.001
+TF-IDF Combined (1-2),Logistic Regression,0.845,0.831,0.812,0.821,0.005
+TF-IDF Combined (1-2),SVM,0.843,0.822,0.821,0.821,0.004
+TF-IDF Combined (1-2),Random Forest,0.808,0.772,0.797,0.784,0.007

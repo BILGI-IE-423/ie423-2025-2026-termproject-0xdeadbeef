@@ -1,0 +1,16 @@
+Feature Set,Model,CV F1,CV F1 Std,Best Params
+Engineered Only,LR,0.538,0.005,{'clf__C': 0.01}
+Engineered Only,SVM,0.365,0.007,{'clf__C': 0.01}
+Engineered Only,RF,0.563,0.007,{'clf__n_estimators': 200}
+TF-IDF Unigram,LR,0.769,0.007,{'clf__C': 1}
+TF-IDF Unigram,SVM,0.758,0.007,{'clf__C': 0.1}
+TF-IDF Unigram,RF,0.736,0.009,{'clf__n_estimators': 200}
+TF-IDF + Engineered,LR,0.779,0.007,{'clf__C': 1}
+TF-IDF + Engineered,SVM,0.771,0.006,{'clf__C': 0.1}
+TF-IDF + Engineered,RF,0.754,0.009,{'clf__n_estimators': 200}
+TF-IDF Bigram,LR,0.697,0.007,{'clf__C': 1}
+TF-IDF Bigram,SVM,0.682,0.006,{'clf__C': 1}
+TF-IDF Bigram,RF,0.672,0.005,{'clf__n_estimators': 200}
+TF-IDF Combined (1-2),LR,0.774,0.004,{'clf__C': 1}
+TF-IDF Combined (1-2),SVM,0.765,0.006,{'clf__C': 0.1}
+TF-IDF Combined (1-2),RF,0.74,0.005,{'clf__n_estimators': 200}

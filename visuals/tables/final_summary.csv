@@ -1,0 +1,5 @@
+Stage,Model,F1,AUC,Accuracy,Note
+News baseline (best in-domain),TF-IDF + Engineered | Logistic Regression,0.827,—,—,"5-Fold CV, news only"
+Leakage confirmed (TF-IDF on GEN),TF-IDF Unigram | LR,0.12,—,—,"Trained on news, tested on GEN"
+Combined model (CV),TF-IDF + Engineered | LR,0.7791270821423791,—,—,"Nested 5-Fold CV, News Headlines + Forum Comments"
+Combined model (test set),TF-IDF + Engineered | LR,0.787,0.883,0.805,20% held-out test set

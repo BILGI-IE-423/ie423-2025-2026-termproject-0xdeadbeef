@@ -1,0 +1,5 @@
+Dataset,Tool,Misleading Rate (%)
+News Headlines,VADER,31.426109435588106
+News Headlines,TextBlob,31.59844894442051
+GEN (Forum),VADER,46.84049079754601
+GEN (Forum),TextBlob,49.5398773006135

@@ -1,0 +1,4 @@
+Class,Precision,Recall,F1,Accuracy
+Normal,0.832,0.809,0.82,—
+Sarcastic,0.775,0.8,0.787,—
+Overall,—,—,0.787,0.805
