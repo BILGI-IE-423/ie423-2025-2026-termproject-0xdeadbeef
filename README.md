@@ -1,4 +1,4 @@
-# IE 423 - Machine Learning Applications in Industrial Engineering - 2025 - 2026 Term Project : Sarcasm Detection Across Different Domains  
+# IE 423 - Machine Learning Applications in Industrial Engineering - 2025-2026 Term Project : Sarcasm Detection Across Different Domains  
 
 ## Live Website
 **https://bilgi-ie-423.github.io/ie423-2025-2026-termproject-0xdeadbeef/**
